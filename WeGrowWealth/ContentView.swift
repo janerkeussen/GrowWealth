@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var selectedMortgageDownpaymentPercent = 0
     @State private var selectedEmergencySavingsPercent = 0
     @State private var selectedBigPurchasePercent = 0
+    @State private var selectedVacationPercent = 0
     @State private var selectedGiftsPercent = 0
     @State private var selectedAdditionalWantsPercent = 0
     
@@ -30,6 +31,11 @@ struct ContentView: View {
     private var bigPurchaseAmount: Double {
         return incomeAmount * Double(selectedBigPurchasePercent)/100
     }
+    
+    private var vacationAmount: Double {
+        return incomeAmount * Double(selectedVacationPercent)/100
+    }
+    
     private var giftsAmount: Double {
         return incomeAmount * Double(selectedGiftsPercent)/100
     }
@@ -48,7 +54,7 @@ struct ContentView: View {
     
     private let mortgageSavingPercentages = [5, 10, 15, 20]
     private let giftsSavingPercentages = [3, 5]
-    private let otherSavingPercentages = [3, 5, 8, 10, 12, 15]
+    private let otherSavingPercentages = [5, 8, 10]
     private let investmentPercentages = [5, 8, 10, 12, 15]
     
     
@@ -59,113 +65,125 @@ struct ContentView: View {
     var body: some View {
         VStack {
             NavigationView {
-                Form {
-                    Section("Income") {
-                        TextField("Income", value: $incomeAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
-                            .keyboardType(.decimalPad)
-                    }
-                    
-                    Section {
-                        Picker("Mortgage downpayment", selection: $selectedMortgageDownpaymentPercent) {
-                            ForEach(mortgageSavingPercentages, id: \.self) {
-                                Text($0, format: .percent)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        HStack {
-                            Text("Mortgage downpayment:")
-                            Spacer()
-                            Text(mortgageDownpaymentAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
-                        }
-                        
-                        
-                        Picker("Emergency savings", selection: $selectedEmergencySavingsPercent) {
-                            ForEach(otherSavingPercentages, id: \.self) {
-                                Text($0, format: .percent)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        HStack {
-                            Text("Emergency savings: ")
-                            Spacer()
-                            Text(emergencySavingsAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
-                        }
-                        
-                        
-                        Picker("Big purchase", selection: $selectedBigPurchasePercent) {
-                            ForEach(otherSavingPercentages, id: \.self) {
-                                Text($0, format: .percent)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        HStack {
-                            Text("Big purchase")
-                            Spacer()
-                            Text(bigPurchaseAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
-                        }
-                        
-                        Picker("Gifts", selection: $selectedGiftsPercent) {
-                            ForEach(giftsSavingPercentages, id: \.self) {
-                                Text($0, format: .percent)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        HStack {
-                            Text("Gifts")
-                            Spacer()
-                            Text(giftsAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
-                        }
-                    } header: {
-                        Text("Savings")
-                    }
-                    
-                    Section {
-                        Picker("Retirement investments", selection: $selectedRetirementInvestmentsPercent) {
-                            ForEach(investmentPercentages, id: \.self) {
-                                Text($0, format: .percent)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        HStack {
-                            Text("Retirement investments")
-                            Spacer()
-                            Text(retirementInvestmentsAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
-                        }
-                        
-                        Picker("Taxed investments", selection: $selectedTaxedInvestmentsPercent) {
-                            ForEach(investmentPercentages, id: \.self) {
-                                Text($0, format: .percent)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        HStack {
-                            Text("Investments amount:")
-                            Spacer()
-                            Text(taxedInvestmentsAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
-                        }
-                    } header: {
-                        Text("Investments")
-                    }
-                    
-                    Section {
-                        HStack {
-                            Text("Amount:")
-                            Spacer()
-                            Text(leftToSpend, format: .currency(code: Locale.current.currencyCode ?? "USD"))
-                        }
-                    } header: {
-                        Text("Left to spend")
-                        
-                        
-                    }
-                }
+                formContentView
                 .navigationTitle("Grow wealth")
             }
         }
     }
-    
-   private var contentView: some View {
-        Text("Placeholder")
+   
+    private var formContentView: some View {
+        Form {
+            Section("Income") {
+                TextField("Income", value: $incomeAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                    .keyboardType(.decimalPad)
+            }
+            
+            Section {
+                Picker("Mortgage downpayment", selection: $selectedMortgageDownpaymentPercent) {
+                    ForEach(mortgageSavingPercentages, id: \.self) {
+                        Text($0, format: .percent)
+                    }
+                }
+                .pickerStyle(.segmented)
+                HStack {
+                    Text("Mortgage downpayment:")
+                    Spacer()
+                    Text(mortgageDownpaymentAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                }
+                
+                
+                Picker("Emergency savings", selection: $selectedEmergencySavingsPercent) {
+                    ForEach(otherSavingPercentages, id: \.self) {
+                        Text($0, format: .percent)
+                    }
+                }
+                .pickerStyle(.segmented)
+                HStack {
+                    Text("Emergency savings: ")
+                    Spacer()
+                    Text(emergencySavingsAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                }
+                
+                
+                Picker("Big purchase", selection: $selectedBigPurchasePercent) {
+                    ForEach(otherSavingPercentages, id: \.self) {
+                        Text($0, format: .percent)
+                    }
+                }
+                .pickerStyle(.segmented)
+                HStack {
+                    Text("Big purchase")
+                    Spacer()
+                    Text(bigPurchaseAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                }
+                
+                Picker("Vacation", selection: $selectedBigPurchasePercent) {
+                    ForEach(otherSavingPercentages, id: \.self) {
+                        Text($0, format: .percent)
+                    }
+                }
+                .pickerStyle(.segmented)
+                HStack {
+                    Text("Vacation")
+                    Spacer()
+                    Text(bigPurchaseAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                }
+                
+                Picker("Gifts", selection: $selectedGiftsPercent) {
+                    ForEach(giftsSavingPercentages, id: \.self) {
+                        Text($0, format: .percent)
+                    }
+                }
+                .pickerStyle(.segmented)
+                HStack {
+                    Text("Gifts")
+                    Spacer()
+                    Text(giftsAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                }
+            } header: {
+                Text("Savings")
+            }
+            
+            Section {
+                Picker("Retirement investments", selection: $selectedRetirementInvestmentsPercent) {
+                    ForEach(investmentPercentages, id: \.self) {
+                        Text($0, format: .percent)
+                    }
+                }
+                .pickerStyle(.segmented)
+                HStack {
+                    Text("Retirement investments")
+                    Spacer()
+                    Text(retirementInvestmentsAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                }
+                
+                Picker("Taxed investments", selection: $selectedTaxedInvestmentsPercent) {
+                    ForEach(investmentPercentages, id: \.self) {
+                        Text($0, format: .percent)
+                    }
+                }
+                .pickerStyle(.segmented)
+                HStack {
+                    Text("Investments amount:")
+                    Spacer()
+                    Text(taxedInvestmentsAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                }
+            } header: {
+                Text("Investments")
+            }
+            
+            Section {
+                HStack {
+                    Text("Amount:")
+                    Spacer()
+                    Text(leftToSpend, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                }
+            } header: {
+                Text("Left to spend")
+                
+                
+            }
+        }
     }
 }
 
